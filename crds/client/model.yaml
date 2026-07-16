@@ -1,0 +1,36 @@
+# OPO1 model aliases — both served by the qwen3.6-27b ModelBackend (one vLLM pod).
+# The two aliases differ only in reasoningConfig.enable_thinking, which the
+# inference-gateway injects as chat_template_kwargs.enable_thinking per request.
+apiVersion: platform.iterabase.com/v1alpha1
+kind: Model
+metadata:
+  name: qwen3.6-27b
+  namespace: iterabase-system
+spec:
+  modelID: qwen3.6-27b # client-facing alias in the OpenAI `model` field
+  displayName: Qwen3.6 27B
+  contextLength: 262144
+  capabilities:
+    - chat
+  backendRef: qwen3.6-27b
+  reasoningConfig:
+    enable_thinking: false
+  transforms:
+    rewrite_model_name: true
+---
+apiVersion: platform.iterabase.com/v1alpha1
+kind: Model
+metadata:
+  name: qwen3.6-27b-thinking
+  namespace: iterabase-system
+spec:
+  modelID: qwen3.6-27b-thinking
+  displayName: Qwen3.6 27B Thinking
+  contextLength: 262144
+  capabilities:
+    - chat
+  backendRef: qwen3.6-27b # same backend; thinking enabled at the alias level
+  reasoningConfig:
+    enable_thinking: true
+  transforms:
+    rewrite_model_name: true
