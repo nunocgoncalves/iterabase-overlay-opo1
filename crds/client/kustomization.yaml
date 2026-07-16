@@ -11,7 +11,6 @@ metadata:
   name: overlay-crds-client
 resources:
   - ../base
-# Add client CRD instances here, e.g.:
-#   - modelbackend-opo1-vllm.yaml
-#   - model-opo1-alias.yaml
+  - modelbackend.yaml # qwen3.6-27b vLLM backend (Qwen3.6-27B-FP8 on the RTX PRO 6000)
+  - model.yaml # two aliases: qwen3.6-27b (thinking off) + qwen3.6-27b-thinking (thinking on)
 # patches: []  # supersede base instances by identity (name)

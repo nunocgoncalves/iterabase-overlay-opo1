@@ -1,0 +1,18 @@
+# OPO1 vLLM backend — serves Qwen3.6-27B-FP8 on the RTX PRO 6000 (Blackwell).
+# FP8 is auto-detected from the model's quantization_config (no --quantization
+# flag); the controller's default vLLM args (--model/--port/--host) suffice.
+# Per-alias reasoning (thinking on/off) is handled by the Model CRD's
+# reasoningConfig, injected by the gateway as chat_template_kwargs.enable_thinking
+# — no vLLM --reasoning-parser needed. (ModelBackend extraArgs: HOR-370, deferred.)
+apiVersion: platform.iterabase.com/v1alpha1
+kind: ModelBackend
+metadata:
+  name: qwen3.6-27b
+  namespace: iterabase-system
+spec:
+  kind: vLLM
+  model: Qwen/Qwen3.6-27B-FP8
+  image: vllm/vllm-openai:v0.25.1 # pinned stable (>=0.19.0 per model card); FP8-on-sm_120 is mature
+  replicas: 1
+  # resources: nvidia.com/gpu defaults to "1" when absent
+  # nodeSelector: defaults to {nvidia.com/gpu.present: "true"} (GPU Operator GFD)

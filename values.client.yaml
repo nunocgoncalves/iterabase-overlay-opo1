@@ -1,5 +1,24 @@
-# Client Helm value overrides — applied AFTER values.yaml (later file wins).
-#
-# This file is empty in the base repo. Clients fill it in their fork with
-# deployment-specific overrides (ingress host, image tags, dep toggles, etc.).
-# Do NOT edit values.yaml — put overrides here to keep upstream syncs conflict-free.
+# OPO1 client Helm value overrides — applied AFTER values.yaml (later file wins).
+# OPO1 = Iterabase internal-prod reference (Horizonshift Platform Direction §11).
+# Fills the base recipe's placeholders + OPO1-specific toggles.
+
+# --- Public edge (fills base placeholders) ---
+metallb-config:
+  addresses:
+    - "2a01:10:1000:1430::100-2a01:10:1000:1430::10f" # OPO1 VLAN30 public IPv6 (OPNsense /56 → /64)
+
+cert-issuers:
+  letsencrypt:
+    email: "nuno+opo1@nunocgoncalves.com" # ACME email (Let's Encrypt notifications)
+
+external-dns:
+  domainFilters:
+    - "iterabase.com." # Cloudflare zone (trailing dot — external-dns FQDN)
+
+inference-gateway:
+  ingress:
+    host: "inference.iterabase.com" # single public hostname; Cloudflare-proxied AAAA → ::100
+
+# --- Data deps ---
+minio:
+  enabled: false # OPO1 is prod-inference-only; defer MinIO until the agent product needs object storage
