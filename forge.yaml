@@ -1,0 +1,40 @@
+# forge.yaml — OPO1 substrate recipe (Horizonshift Platform Direction §11).
+#
+# Non-secret infra intent, version-controlled in the OPO1 overlay repo (Flux
+# ignores it — not a K8s manifest; only `forge apply` consumes it). The overlay
+# (values + CRDs) is the runtime source of truth; this is the install-time
+# substrate. Run from the repo root:
+#   forge apply --config forge.yaml     (interactive — prompts for CLOUDFLARE_API_TOKEN)
+apiVersion: forge.horizonshift.io/v1alpha1
+kind: Cluster
+metadata:
+  name: opo1
+spec:
+  mode: single-node
+  hosts:
+    - address: 10.177.20.10          # VLAN20 (SSH/mgmt); opo1-node-01 (HOR-296)
+      sshUser: forge                 # NOPASSWD sudo; key id_ed25519_infra-opo1
+      sshKeyPath: ~/.ssh/id_ed25519_infra-opo1
+      role: control-plane+worker
+      labels: {}
+      taints: []
+  k3s:
+    version: v1.31.5+k3s1
+    clusterCIDR: 10.42.0.0/16
+    serviceCIDR: 10.43.0.0/16
+    dualStack: true
+    clusterCIDRv6: fd42::/48
+    serviceCIDRv6: fd43::/112
+    disable: [traefik, servicelb]    # umbrella owns ingress (ingress-nginx) + LB (MetalLB)
+    extraArgs: []
+  flux: { enabled: false }           # one-shot forge apply; Flux (HOR-292) reconciles from this fork's master later
+  overlay:
+    repo: https://github.com/nunocgoncalves/iterabase-overlay-opo1.git
+    ref: master                      # internal prod → always master (no tags)
+  chart:
+    version: 0.1.14                  # latest published umbrella (GHCR); control-plane 0.2.8
+    namespace: iterabase-system
+  gpu:
+    enabled: true                    # RTX PRO 6000 Blackwell (GB202, sm_120); passthrough tested (HOR-298)
+    operator:
+      version: "v26.3.3"             # default driver 580.126.20 (≥575.57.08 for Blackwell — confirmed)
