@@ -27,7 +27,9 @@ spec:
     serviceCIDRv6: fd43::/112
     disable: [traefik, servicelb]    # umbrella owns ingress (ingress-nginx) + LB (MetalLB)
     extraArgs: []
-  flux: { enabled: false }           # one-shot forge apply; Flux (HOR-292) reconciles from this fork's master later
+  flux:                              # forge installs Flux (v2.4.0) + applies GitRepository/Kustomization watching this fork's master (HOR-292)
+    enabled: true                    # push-to-git auto-reconciles crds/client/ (model + modelbackend)
+    version: "v2.4.0"
   overlay:
     repo: https://github.com/nunocgoncalves/iterabase-overlay-opo1.git
     ref: master                      # internal prod → always master (no tags)
