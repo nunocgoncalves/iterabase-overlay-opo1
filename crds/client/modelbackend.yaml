@@ -1,4 +1,8 @@
 # OPO1 vLLM backend — serves Qwen3.6-27B-FP8 on the RTX PRO 6000 (Blackwell).
+#
+# NOTE: the metadata.name MUST be a DNS-1035 label (lowercase alphanum + '-',
+# no dots) — the control-plane reconciler uses it as the Service name, which
+# rejects dots. The client-facing alias is modelID on the Model CR (dots OK).
 # FP8 is auto-detected from the model's quantization_config (no --quantization
 # flag); the controller's default vLLM args (--model/--port/--host) suffice.
 # Per-alias reasoning (thinking on/off) is handled by the Model CRD's
@@ -7,7 +11,7 @@
 apiVersion: platform.iterabase.com/v1alpha1
 kind: ModelBackend
 metadata:
-  name: qwen3.6-27b
+  name: qwen3-6-27b # DNS-1035-safe (no dot); used as the Service name
   namespace: iterabase-system
 spec:
   kind: vLLM
