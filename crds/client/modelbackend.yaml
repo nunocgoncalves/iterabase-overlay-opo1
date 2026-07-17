@@ -4,10 +4,11 @@
 # no dots) — the control-plane reconciler uses it as the Service name, which
 # rejects dots. The client-facing alias is modelID on the Model CR (dots OK).
 # FP8 is auto-detected from the model's quantization_config (no --quantization
-# flag); the controller's default vLLM args (--model/--port/--host) suffice.
-# Per-alias reasoning (thinking on/off) is handled by the Model CRD's
-# reasoningConfig, injected by the gateway as chat_template_kwargs.enable_thinking
-# — no vLLM --reasoning-parser needed. (ModelBackend extraArgs: HOR-370, deferred.)
+# flag). The controller's default vLLM args (--model/--port/--host) are appended
+# before spec.extraArgs (HOR-370, now live in chart 0.1.16) — see below. Per-alias
+# thinking on/off is still driven by the Model CRD's reasoningConfig
+# (chat_template_kwargs.enable_thinking, gateway-injected); --reasoning-parser
+# qwen3 below is for separated reasoning_content output parsing only.
 apiVersion: platform.iterabase.com/v1alpha1
 kind: ModelBackend
 metadata:
@@ -18,5 +19,25 @@ spec:
   model: Qwen/Qwen3.6-27B-FP8
   image: vllm/vllm-openai:v0.25.1 # pinned stable (>=0.19.0 per model card); FP8-on-sm_120 is mature
   replicas: 1
+  # extraArgs (HOR-370): additional vLLM serving flags appended after the
+  # controller-managed --model/--port/--host. --enable-expert-parallel +
+  # --mm-encoder-tp-mode/--mm-processor-cache-type tune MoE/multimodal serving;
+  # --enable-prefix-caching enables prefix caching; --reasoning-parser qwen3 +
+  # --enable-auto-tool-choice --tool-call-parser qwen3_coder enable separated
+  # reasoning_content + tool-call output parsing. Per-alias thinking on/off is
+  # still driven by the Model CRD's reasoningConfig (chat_template_kwargs.
+  # enable_thinking, gateway-injected).
+  extraArgs:
+    - --enable-expert-parallel
+    - --mm-encoder-tp-mode
+    - data
+    - --mm-processor-cache-type
+    - shm
+    - --reasoning-parser
+    - qwen3
+    - --enable-prefix-caching
+    - --enable-auto-tool-choice
+    - --tool-call-parser
+    - qwen3_coder
   # resources: nvidia.com/gpu defaults to "1" when absent
   # nodeSelector: defaults to {nvidia.com/gpu.present: "true"} (GPU Operator GFD)

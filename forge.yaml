@@ -34,7 +34,7 @@ spec:
     repo: https://github.com/nunocgoncalves/iterabase-overlay-opo1.git
     ref: master                      # internal prod → always master (no tags)
   chart:
-    version: 0.1.15                  # latest published umbrella (GHCR); inference-gateway 0.2.3 (HOR-374 stale Content-Length fix), control-plane 0.2.8
+    version: 0.1.16                  # latest published umbrella (GHCR); inference-gateway 0.2.3 (HOR-374 stale Content-Length fix), control-plane 0.2.9
     namespace: iterabase-system
   gpu:
     enabled: true                    # RTX PRO 6000 Blackwell (GB202, sm_120); passthrough tested (HOR-298)
