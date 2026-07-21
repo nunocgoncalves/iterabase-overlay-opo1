@@ -38,5 +38,11 @@ spec:
     - --enable-auto-tool-choice
     - --tool-call-parser
     - qwen3_coder
+  # devShmSize (HOR-382): sized memory-backed /dev/shm so
+  # --mm-processor-cache-type shm doesn't exhaust the runtime default ~64 MiB
+  # tmpfs (sem_open ENOSPC, CrashLoopBackOff). 8Gi for this 27B multimodal
+  # cache; the node has ample RAM. Requires control-plane >= 0.0.14
+  # (umbrella 0.1.21 — see forge.yaml chart.version).
+  devShmSize: 8Gi
   # resources: nvidia.com/gpu defaults to "1" when absent
   # nodeSelector: defaults to {nvidia.com/gpu.present: "true"} (GPU Operator GFD)
