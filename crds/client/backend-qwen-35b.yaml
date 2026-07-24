@@ -9,10 +9,10 @@ spec:
   image: vllm/vllm-openai:v0.25.1
   replicas: 1
   extraArgs:
-    # - --tensor-parallel-size
-    # - "1"
-    # - --pipeline-parallel-size
-    # - "2"
+    - --tensor-parallel-size
+    - "1"
+    - --pipeline-parallel-size
+    - "2"
     - --language-model-only
     - --max-model-len
     - "32768"
