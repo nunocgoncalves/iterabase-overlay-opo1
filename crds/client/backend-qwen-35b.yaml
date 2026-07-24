@@ -10,18 +10,18 @@ spec:
   replicas: 1
   extraArgs:
     # - --tensor-parallel-size
-    # - 1
+    # - "1"
     # - --pipeline-parallel-size
-    # - 2
+    # - "2"
     - --language-model-only
     - --max-model-len
-    - 32768
+    - "32768"
     - --gpu-memory-utilization
-    - 0.90
+    - "0.90"
     - --max-num-seqs
-    - 32
+    - "32"
     - --max-num-batched-tokens
-    - 8192
+    - "8192"
     - --enable-chunked-prefill
     - --reasoning-parser
     - qwen3
