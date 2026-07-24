@@ -11,6 +11,6 @@ metadata:
   name: overlay-crds-client
 resources:
   - ../base
-  - modelbackend.yaml # qwen3.6-27b vLLM backend (Qwen3.6-27B-FP8 on the RTX PRO 6000)
-  - model.yaml # two aliases: qwen3.6-27b (thinking off) + qwen3.6-27b-thinking (thinking on)
+  # - modelbackend.yaml # qwen3.6-27b vLLM backend (Qwen3.6-27B-FP8 on the RTX PRO 6000)
+  # - model.yaml # two aliases: qwen3.6-27b (thinking off) + qwen3.6-27b-thinking (thinking on)
 # patches: []  # supersede base instances by identity (name)
